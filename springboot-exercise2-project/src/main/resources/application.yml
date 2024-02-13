@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+api:
+  jph:
+    domain: "api.coingecko.com"
+    basepath: "/api/v3"
+    endpoints:
+      markets: "/coins/markets"
+      list: "/coins/list"
+    key: "CG-bwho9ocenw9LA9LoBbJQvGFa"
+
+# database:
+#   postgres: "db_forum"
+
+# spring.datasource:
+#   driverClassName: "org.hibernate.dialect.PostgreSQLDialect"
+#   url: "jdbc:postgresql://localhost:5432/${database.postgres}"
+#   username: "postgres"
+#   password: "Bibuchu#1"
+
+# spring.jpa:
+#   show-sql: true
+#   hibernate.ddl-auto: update
+#   # Hibernate ddl auto (create, create-drop, validate, update)
