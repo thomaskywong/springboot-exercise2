@@ -1,6 +1,5 @@
 package com.vtxlab.bootcamp.springbootexercise2project.Controller.impl;
 
-import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,17 +22,17 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
 
   @Override
   public ApiResponse<List<Market>> getMarkets(String currency, String... ids) {
-    
-    // System.out.println(Arrays.toString(ids));
 
     Currency cur = Currency.toCurrency(currency);
 
     if (ids == null) {
+
       return ApiResponse.<List<Market>>builder() //
           .code(Syscode.OK.getCode()) //
           .message(Syscode.OK.getMessage()) //
           .data(crytoGeckoService.getMarkets(cur)) //
           .build();
+    
     } else {
       List<Coin> coins = crytoGeckoService.getCoins();
 
@@ -48,8 +47,14 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
           .message(Syscode.OK.getMessage()) //
           .data(crytoGeckoService.getMarkets(cur, ids)) //
           .build();
+          
     }
 
+  }
+
+  @Override
+  public List<Coin> getCoins() {
+    return crytoGeckoService.getCoins();
   }
 
 }

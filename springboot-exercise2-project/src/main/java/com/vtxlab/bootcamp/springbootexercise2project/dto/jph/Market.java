@@ -1,5 +1,6 @@
 package com.vtxlab.bootcamp.springbootexercise2project.dto.jph;
 
+import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -73,7 +74,7 @@ public class Market {
   private double athChangePercentage;
   // "ath_change_percentage": -48.60699,
   @JsonProperty(value = "ath_date")
-  private String athDate;
+  private LocalDateTime athDate;
   // "ath_date": "2021-11-10T14:24:19.604Z",
   @JsonProperty(value = "atl")
   private double atl;
@@ -82,7 +83,7 @@ public class Market {
   private double atlChangePercentage;
   // "atl_change_percentage": 578931.72221,
   @JsonProperty(value = "atl_date")
-  private String atlDate;
+  private LocalDateTime atlDate;
   // "atl_date": "2015-10-20T00:00:00.000Z",
   @JsonProperty(value = "roi")
   private Roi roi;
@@ -93,7 +94,7 @@ public class Market {
   // },
 
   @JsonProperty(value = "last_updated")
-  private String lastUpdated;
+  private LocalDateTime lastUpdated;
   // "last_updated": "2024-02-10T05:39:53.906Z"
 
   @Getter
