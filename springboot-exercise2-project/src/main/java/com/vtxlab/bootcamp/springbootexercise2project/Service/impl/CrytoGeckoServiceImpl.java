@@ -12,7 +12,7 @@ import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Coin;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.Currency;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.Scheme;
-import com.vtxlab.bootcamp.springbootexercise2project.model.CryptoGeckoUrlBuilder;
+import com.vtxlab.bootcamp.springbootexercise2project.mapper.UriCompBuilder;
 
 @Service
 public class CrytoGeckoServiceImpl implements CryptoGeckoService {
@@ -38,7 +38,7 @@ public class CrytoGeckoServiceImpl implements CryptoGeckoService {
         @Override
         public List<Coin> getCoins() {
 
-                String urlString = CryptoGeckoUrlBuilder.url(Scheme.HTTPS,
+                String urlString = UriCompBuilder.url(Scheme.HTTPS,
                                 domain, basepath, endpointCoins, key);
 
                 Coin[] coins = restTemplate.getForObject(urlString,
@@ -50,7 +50,7 @@ public class CrytoGeckoServiceImpl implements CryptoGeckoService {
         @Override
         public List<Market> getMarkets(Currency cur) {
 
-                String urlString = CryptoGeckoUrlBuilder.url(Scheme.HTTPS,
+                String urlString = UriCompBuilder.url(Scheme.HTTPS,
                                 domain, basepath, endpointMarkets, cur, key);
 
                 Market[] markets = restTemplate.getForObject(urlString,
@@ -62,7 +62,7 @@ public class CrytoGeckoServiceImpl implements CryptoGeckoService {
         @Override
         public List<Market> getMarkets(Currency cur, String... ids) {
 
-                String urlString = CryptoGeckoUrlBuilder.url(Scheme.HTTPS,
+                String urlString = UriCompBuilder.url(Scheme.HTTPS,
                                 domain, basepath, endpointMarkets, cur, key,
                                 ids);
 

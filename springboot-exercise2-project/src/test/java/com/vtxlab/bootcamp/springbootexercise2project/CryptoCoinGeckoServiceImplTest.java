@@ -1,5 +1,10 @@
 package com.vtxlab.bootcamp.springbootexercise2project;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -11,7 +16,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 import com.vtxlab.bootcamp.springbootexercise2project.Service.impl.CrytoGeckoServiceImpl;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Coin;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market;
@@ -19,11 +23,6 @@ import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market.Roi;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.Currency;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.Scheme;
 import com.vtxlab.bootcamp.springbootexercise2project.model.CryptoGeckoUrlBuilder;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 
 @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(OrderAnnotation.class)
@@ -41,10 +40,6 @@ public class CryptoCoinGeckoServiceImplTest {
 
     @Value(value = "${api.jph.endpoints.list}")
     private String endpointCoins;
-
-    private final String currencyEqual = "?vs_currency=";
-
-    private final String apiKeyEqual = "&x_cg_demo_api_key=";
 
     @Value(value = "${api.jph.key}")
     private String key;

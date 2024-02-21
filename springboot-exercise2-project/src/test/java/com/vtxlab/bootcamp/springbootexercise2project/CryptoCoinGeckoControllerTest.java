@@ -6,8 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +15,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.vtxlab.bootcamp.springbootexercise2project.Controller.impl.CryptoCoinGeckoController;
 import com.vtxlab.bootcamp.springbootexercise2project.Service.CryptoGeckoService;
+import com.vtxlab.bootcamp.springbootexercise2project.config.ScheduledConfig;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Coin;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market.Roi;
-import com.vtxlab.bootcamp.springbootexercise2project.infra.Currency;
+import com.vtxlab.bootcamp.springbootexercise2project.infra.RedisHelper;
 
 @WebMvcTest(CryptoCoinGeckoController.class)
 public class CryptoCoinGeckoControllerTest {
@@ -29,12 +28,21 @@ public class CryptoCoinGeckoControllerTest {
         private Market m2;
         private Coin c1;
         private Coin c2;
+        private String key1;
+        private String key2;
+
 
         @Autowired
         private MockMvc mockMvc;
 
         @MockBean
+        private RedisHelper redisHelper;
+
+        @MockBean
         private CryptoGeckoService cryptoGeckoService;
+
+        @MockBean
+        private ScheduledConfig scheduleConfig;
 
         {
                 this.m1 = Market.builder() //
@@ -116,17 +124,25 @@ public class CryptoCoinGeckoControllerTest {
                                 .symbol("eth") //
                                 .name("Ethereum") //
                                 .build();
+
+                this.key1 = "crytpo:coingecko:coin-markets:usd:bitcoin";
+                this.key2 = "crytpo:coingecko:coin-markets:usd:ethereum";
+
         }
 
         @Test
         void testGetMarkets() throws Exception {
 
-                List<Market> markets = new LinkedList<>();
-                markets.add(m1);
-                markets.add(m2);
+                LocalDateTime nowTime = LocalDateTime.now();
+                LocalDateTime sixtySecondsBeforeNow = nowTime.minusSeconds(60);
 
-                Mockito.when(cryptoGeckoService.getMarkets(Currency.USD)) //
-                                .thenReturn(markets);
+                Mockito.when(scheduleConfig.getCoingeckoUpdateTime())
+                                .thenReturn(sixtySecondsBeforeNow);
+
+                Mockito.when(redisHelper.get(key1, Market.class))
+                                .thenReturn(m1);
+                Mockito.when(redisHelper.get(key2, Market.class))
+                                .thenReturn(m2);
 
                 mockMvc.perform(get("/crypto/coingecko/api/v1/coins") //
                                 .param("currency", "usd")) //
@@ -263,124 +279,55 @@ public class CryptoCoinGeckoControllerTest {
         }
 
         @Test
-        void testGetMarkets2() throws Exception {
+        void testGetMarketsInvalidCurrency() throws Exception {
 
-                List<Market> markets = new LinkedList<>();
-                markets.add(m2);
+                LocalDateTime nowTime = LocalDateTime.now();
+                LocalDateTime sixtySecondsBeforeNow = nowTime.minusSeconds(60);
 
-                String[] ids = new String[1];
-                ids[0] = "ethereum";
-
-                Mockito.when(cryptoGeckoService.getMarkets(Currency.USD, ids)) //
-                                .thenReturn(markets);
-
-                List<Coin> coins = new LinkedList<>(List.of(c2));
-
-                Mockito.when(cryptoGeckoService.getCoins()) //
-                                .thenReturn(coins);
+                Mockito.when(scheduleConfig.getCoingeckoUpdateTime())
+                                .thenReturn(sixtySecondsBeforeNow);
 
                 mockMvc.perform(get("/crypto/coingecko/api/v1/coins") //
-                                .param("currency", "usd") //
-                                .param("ids", ids)) //
-                                .andExpect(status().isOk()) //
-                                .andExpect(content().contentType(
-                                                MediaType.APPLICATION_JSON)) //
-                                .andExpect(jsonPath("$.code").value("000000")) //
-                                .andExpect(jsonPath("$.message").value("OK.")) //
-                                .andExpect(jsonPath("$.data[0].id")
-                                                .value("ethereum")) //
-                                .andExpect(jsonPath("$.data[0].symbol")
-                                                .value("eth")) //
-                                .andExpect(jsonPath("$.data[0].name")
-                                                .value("Ethereum")) //
-                                .andExpect(jsonPath("$.data[0].image").value(
-                                                "https://assets.coingecko.com/coins/images/279/large/ethereum.png?1696501628")) //
-                                .andExpect(jsonPath("$.data[0].current_price")
-                                                .value(2489.94)) //
-                                .andExpect(jsonPath("$.data[0].market_cap")
-                                                .value(299318023536L)) //
-                                .andExpect(jsonPath("$.data[0].market_cap_rank")
-                                                .value(2)) //
-                                .andExpect(jsonPath(
-                                                "$.data[0].fully_diluted_valuation")
-                                                                .value(299318023536L)) //
-                                .andExpect(jsonPath("$.data[0].total_volume")
-                                                .value(7275066671L)) //
-                                .andExpect(jsonPath("$.data[0].high_24h")
-                                                .value(2531.49)) //
-                                .andExpect(jsonPath("$.data[0].low_24h")
-                                                .value(2485.33)) //
-                                .andExpect(jsonPath(
-                                                "$.data[0].price_change_24h")
-                                                                .value(-39.68281791189611)) //
-                                .andExpect(jsonPath(
-                                                "$.data[0].price_change_percentage_24h")
-                                                                .value(-1.56873)) //
-                                .andExpect(jsonPath(
-                                                "$.data[0].market_cap_change_24h")
-                                                                .value(-4226118606L)) //
-                                .andExpect(jsonPath(
-                                                "$.data[0].market_change_percentage_24h")
-                                                                .value(0.0)) //
-                                .andExpect(jsonPath(
-                                                "$.data[0].circulating_supply24h")
-                                                                .value(0.0)) //
-                                .andExpect(jsonPath("$.data[0].total_supply")
-                                                .value(120169997.442938)) //
-                                .andExpect(jsonPath("$.data[0].max_supply")
-                                                .value(0)) //
-                                .andExpect(jsonPath("$.data[0].ath")
-                                                .value(4878.26)) //
-                                .andExpect(jsonPath(
-                                                "$.data[0].ath_change_percentage")
-                                                                .value(-48.94296)) //
-                                .andExpect(jsonPath("$.data[0].ath_date").value(
-                                                "2021-11-10T14:24:19.604")) //
-                                .andExpect(jsonPath("$.data[0].atl")
-                                                .value(0.432979)) //
-                                .andExpect(jsonPath(
-                                                "$.data[0].atl_change_percentage")
-                                                                .value(575146.37857)) //
-                                .andExpect(jsonPath("$.data[0].atl_date")
-                                                .value("2015-10-20T00:00:00")) //
-                                .andExpect(jsonPath("$.data[0].roi.times")
-                                                .value(68.1911670378185)) //
-                                .andExpect(jsonPath("$.data[0].roi.currency")
-                                                .value("btc")) //
-                                .andExpect(jsonPath("$.data[0].roi.percentage")
-                                                .value(6819.11670378185)) //
-                                .andExpect(jsonPath("$.data[0].last_updated")
-                                                .value("2024-02-12T09:05:34.169")) //
+                                .param("currency", "hkd")) //
+                                .andExpect(status().isServiceUnavailable()) //
                                 .andDo(print());
 
         }
 
         @Test
-        void testGetMarkets3() throws Exception {
+        void testGetMarketsTimeOut() throws Exception {
 
+                LocalDateTime nowTime = LocalDateTime.now();
+                LocalDateTime sixtyOneSecondsBeforeNow =
+                                nowTime.minusSeconds(61);
 
+                Mockito.when(scheduleConfig.getCoingeckoUpdateTime())
+                                .thenReturn(sixtyOneSecondsBeforeNow);
 
-                List<Coin> coins = new LinkedList<>();
-                coins.add(c1);
-                coins.add(c2);
+                mockMvc.perform(get("/crypto/coingecko/api/v1/coins") //
+                                .param("currency", "usd")) //
+                                .andExpect(status().isServiceUnavailable()) //
+                                .andDo(print());
 
-                List<Market> markets = new LinkedList<>();
-                markets.add(m1);
-                markets.add(m2);
+        }
 
-                String[] ids = new String[2];
-                ids[0] = "bitcoin";
-                ids[1] = "ethereum";
+        @Test
+        void testGetMarket() throws Exception {
 
-                Mockito.when(cryptoGeckoService.getMarkets(Currency.USD, ids)) //
-                                .thenReturn(markets);
+                LocalDateTime nowTime = LocalDateTime.now();
+                LocalDateTime sixtySecondsBeforeNow = nowTime.minusSeconds(60);
 
-                Mockito.when(cryptoGeckoService.getCoins()) //
-                                .thenReturn(coins);
+                Mockito.when(scheduleConfig.getCoingeckoUpdateTime())
+                                .thenReturn(sixtySecondsBeforeNow);
+
+                Mockito.when(redisHelper.get(key1, Market.class))
+                                .thenReturn(m1);
+                Mockito.when(redisHelper.get(key2, Market.class))
+                                .thenReturn(m2);
 
                 mockMvc.perform(get("/crypto/coingecko/api/v1/coins") //
                                 .param("currency", "usd") //
-                                .param("ids", ids)) //
+                                .param("ids", "bitcoin", "ethereum")) //
                                 .andExpect(status().isOk()) //
                                 .andExpect(content().contentType(
                                                 MediaType.APPLICATION_JSON)) //
@@ -440,8 +387,8 @@ public class CryptoCoinGeckoControllerTest {
                                 .andExpect(jsonPath(
                                                 "$.data[0].atl_change_percentage")
                                                                 .value(70818.73563)) //
-                                .andExpect(jsonPath("$.data[0].atl_date").value(
-                                                "2013-07-06T00:00:00")) //
+                                .andExpect(jsonPath("$.data[0].atl_date")
+                                                .value("2013-07-06T00:00:00")) //
                                 .andExpect(jsonPath("$.data[0].roi").isEmpty()) //
                                 .andExpect(jsonPath("$.data[0].last_updated")
                                                 .value("2024-02-12T09:05:16.397")) //
@@ -499,8 +446,8 @@ public class CryptoCoinGeckoControllerTest {
                                 .andExpect(jsonPath(
                                                 "$.data[1].atl_change_percentage")
                                                                 .value(575146.37857)) //
-                                .andExpect(jsonPath("$.data[1].atl_date").value(
-                                                "2015-10-20T00:00:00")) //
+                                .andExpect(jsonPath("$.data[1].atl_date")
+                                                .value("2015-10-20T00:00:00")) //
                                 .andExpect(jsonPath("$.data[1].roi.times")
                                                 .value(68.1911670378185)) //
                                 .andExpect(jsonPath("$.data[1].roi.currency")
@@ -509,6 +456,128 @@ public class CryptoCoinGeckoControllerTest {
                                                 .value(6819.11670378185)) //
                                 .andExpect(jsonPath("$.data[1].last_updated")
                                                 .value("2024-02-12T09:05:34.169")) //
+                                .andDo(print());
+
+        }
+
+        @Test
+        void testGetMarketOneId() throws Exception {
+
+                LocalDateTime nowTime = LocalDateTime.now();
+                LocalDateTime sixtySecondsBeforeNow = nowTime.minusSeconds(60);
+
+                Mockito.when(scheduleConfig.getCoingeckoUpdateTime())
+                                .thenReturn(sixtySecondsBeforeNow);
+
+                Mockito.when(redisHelper.get(key1, Market.class))
+                                .thenReturn(m1);
+
+                mockMvc.perform(get("/crypto/coingecko/api/v1/coins") //
+                                .param("currency", "usd") //
+                                .param("ids", "bitcoin")) //
+                                .andExpect(status().isOk()) //
+                                .andExpect(content().contentType(
+                                                MediaType.APPLICATION_JSON)) //
+                                .andExpect(jsonPath("$.code").value("000000")) //
+                                .andExpect(jsonPath("$.message").value("OK.")) //
+                                .andExpect(jsonPath("$.data[0].id")
+                                                .value("bitcoin")) //
+                                .andExpect(jsonPath("$.data[0].symbol")
+                                                .value("btc")) //
+                                .andExpect(jsonPath("$.data[0].name")
+                                                .value("Bitcoin")) //
+                                .andExpect(jsonPath("$.data[0].image").value(
+                                                "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1696501400")) //
+                                .andExpect(jsonPath("$.data[0].current_price")
+                                                .value(48119.0)) //
+                                .andExpect(jsonPath("$.data[0].market_cap")
+                                                .value(943979075690L)) //
+                                .andExpect(jsonPath("$.data[0].market_cap_rank")
+                                                .value(1)) //
+                                .andExpect(jsonPath(
+                                                "$.data[0].fully_diluted_valuation")
+                                                                .value(1010083664413L)) //
+                                .andExpect(jsonPath("$.data[0].total_volume")
+                                                .value(14878964982L)) //
+                                .andExpect(jsonPath("$.data[0].high_24h")
+                                                .value(48729.0)) //
+                                .andExpect(jsonPath("$.data[0].low_24h")
+                                                .value(47947.0)) //
+                                .andExpect(jsonPath(
+                                                "$.data[0].price_change_24h")
+                                                                .value(-91.39385662862333)) //
+                                .andExpect(jsonPath(
+                                                "$.data[0].price_change_percentage_24h")
+                                                                .value(-0.18957)) //
+                                .andExpect(jsonPath(
+                                                "$.data[0].market_cap_change_24h")
+                                                                .value(-2218967570L)) //
+                                .andExpect(jsonPath(
+                                                "$.data[0].market_change_percentage_24h")
+                                                                .value(0.0)) //
+                                .andExpect(jsonPath(
+                                                "$.data[0].circulating_supply24h")
+                                                                .value(0.0)) //
+                                .andExpect(jsonPath("$.data[0].total_supply")
+                                                .value(21000000)) //
+                                .andExpect(jsonPath("$.data[0].max_supply")
+                                                .value(21000000)) //
+                                .andExpect(jsonPath("$.data[0].ath")
+                                                .value(69045.0)) //
+                                .andExpect(jsonPath(
+                                                "$.data[0].ath_change_percentage")
+                                                                .value(-30.35057)) //
+                                .andExpect(jsonPath("$.data[0].ath_date").value(
+                                                "2021-11-10T14:24:11.849")) //
+                                .andExpect(jsonPath("$.data[0].atl")
+                                                .value(67.81)) //
+                                .andExpect(jsonPath(
+                                                "$.data[0].atl_change_percentage")
+                                                                .value(70818.73563)) //
+                                .andExpect(jsonPath("$.data[0].atl_date")
+                                                .value("2013-07-06T00:00:00")) //
+                                .andExpect(jsonPath("$.data[0].roi").isEmpty()) //
+                                .andExpect(jsonPath("$.data[0].last_updated")
+                                                .value("2024-02-12T09:05:16.397")) //
+                                .andDo(print());
+
+        }
+
+        @Test
+        void testGetMarketTimeOut() throws Exception {
+
+                LocalDateTime nowTime = LocalDateTime.now();
+
+                LocalDateTime sixtyOneSecondsBeforeNow =
+                                nowTime.minusSeconds(61);
+
+
+                Mockito.when(scheduleConfig.getCoingeckoUpdateTime())
+                                .thenReturn(sixtyOneSecondsBeforeNow);
+
+                mockMvc.perform(get("/crypto/coingecko/api/v1/coins") //
+                                .param("currency", "usd") //
+                                .param("ids", "bitcoin")) //
+                                .andExpect(status().isServiceUnavailable()) //
+                                .andDo(print());
+
+        }
+
+        @Test
+        void testGetMarketInvalidCurrency() throws Exception {
+
+                LocalDateTime nowTime = LocalDateTime.now();
+
+                LocalDateTime sixtySecondsBeforeNow = nowTime.minusSeconds(60);
+
+
+                Mockito.when(scheduleConfig.getCoingeckoUpdateTime())
+                                .thenReturn(sixtySecondsBeforeNow);
+
+                mockMvc.perform(get("/crypto/coingecko/api/v1/coins") //
+                                .param("currency", "hkd") //
+                                .param("ids", "bitcoin")) //
+                                .andExpect(status().isServiceUnavailable()) //
                                 .andDo(print());
 
         }

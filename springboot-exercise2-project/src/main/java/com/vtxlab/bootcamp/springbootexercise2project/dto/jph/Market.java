@@ -1,5 +1,6 @@
 package com.vtxlab.bootcamp.springbootexercise2project.dto.jph;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -11,7 +12,7 @@ import lombok.ToString;
 @Builder
 @EqualsAndHashCode
 @ToString
-public class Market {
+public class Market implements Serializable {
 
   @JsonProperty(value = "id")
   private String id;

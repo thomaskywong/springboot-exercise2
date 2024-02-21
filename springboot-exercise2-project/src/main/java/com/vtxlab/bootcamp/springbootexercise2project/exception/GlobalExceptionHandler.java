@@ -33,6 +33,16 @@ public class GlobalExceptionHandler {
         .build();
   }
 
+  @ExceptionHandler(CoingeckoNotAvailableException.class)
+  @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
+  public ApiResponse<Void> CoingeckoNotAvailableExceptionHandler(CoingeckoNotAvailableException ex) {
+    return ApiResponse.<Void>builder() //
+        .code(Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION.getCode()) //
+        .message(Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION.getMessage()) //
+        .data(null) //
+        .build();
+  }
+
   @ExceptionHandler(RestClientException.class)
   @ResponseStatus(value = HttpStatus.REQUEST_TIMEOUT)
   public ApiResponse<Void> RestClientExceptionHandler(RestClientException ex) {
