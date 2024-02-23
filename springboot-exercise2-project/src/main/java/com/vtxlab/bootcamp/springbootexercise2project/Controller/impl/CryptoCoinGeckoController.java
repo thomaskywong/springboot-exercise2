@@ -8,16 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vtxlab.bootcamp.springbootexercise2project.Controller.CryptoCoinGeckoOperation;
-import com.vtxlab.bootcamp.springbootexercise2project.Service.CryptoGeckoService;
+import com.vtxlab.bootcamp.springbootexercise2project.Service.impl.RedisService;
 import com.vtxlab.bootcamp.springbootexercise2project.config.ScheduledConfig;
-import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Coin;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market;
 import com.vtxlab.bootcamp.springbootexercise2project.exception.CoingeckoNotAvailableException;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.ApiResponse;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.CoinId;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.Currency;
-import com.vtxlab.bootcamp.springbootexercise2project.infra.RedisHelper;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.Syscode;
 
 
@@ -26,10 +25,10 @@ import com.vtxlab.bootcamp.springbootexercise2project.infra.Syscode;
 public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
 
   @Autowired
-  private CryptoGeckoService crytoGeckoService;
+  private RedisService redisService;
 
   @Autowired
-  private RedisHelper redisHelper;
+  private ObjectMapper objectMapper;
 
   @Autowired
   private ScheduledConfig scheduledConfig;
@@ -39,18 +38,24 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
       throws JsonProcessingException {
 
     if (!(Currency.isValidCurrency(currency))) {
-      throw new CoingeckoNotAvailableException(Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
+      // System.out.println("Invalid Currency.");
+      throw new CoingeckoNotAvailableException(
+          Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
     }
 
-    Duration duration = Duration.between(scheduledConfig.getCoingeckoUpdateTime(), LocalDateTime.now());
+    Duration duration = Duration
+        .between(scheduledConfig.getCoingeckoUpdateTime(), LocalDateTime.now());
     if (duration.getSeconds() > 60) {
-      throw new CoingeckoNotAvailableException(Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
+      // System.out.println("Timeout.");
+      throw new CoingeckoNotAvailableException(
+          Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
     }
     System.out.println("delay time=" + duration);
 
     List<Market> markets = new LinkedList<>();
     String coinId = "";
     String key = "";
+    String value = "";
     Market market;
 
     if (ids == null) {
@@ -59,47 +64,39 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
         coinId = coin.name().toLowerCase();
         key = new StringBuilder("crytpo:coingecko:coin-markets:")
             .append(currency).append(":").append(coinId).toString();
-        // System.out.println("input key=" + key);
-        market = redisHelper.get(key, Market.class);
+        value = redisService.getValue(key);
+        market = objectMapper.readValue(value, Market.class);
         markets.add(market);
       }
 
       return ApiResponse.<List<Market>>builder() //
-          .code(Syscode.OK.getCode()) //
-          .message(Syscode.OK.getMessage()) //
+          .OK() //
           .data(markets) //
           .build();
 
     } else {
 
       for (String id : ids) {
-        
+
         if (!(CoinId.isValidCoinId(id))) {
           throw new CoingeckoNotAvailableException(
-            Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
+              Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
         }
 
         key = new StringBuilder("crytpo:coingecko:coin-markets:")
             .append(currency).append(":").append(id).toString();
-        // System.out.println("input key=" + key);
-        market = redisHelper.get(key, Market.class);
+        value = redisService.getValue(key);
+        market = objectMapper.readValue(value, Market.class);
         markets.add(market);
 
       }
 
       return ApiResponse.<List<Market>>builder() //
-          .code(Syscode.OK.getCode()) //
-          .message(Syscode.OK.getMessage()) //
+          .OK() //
           .data(markets) //
           .build();
-
     }
 
-  }
-
-  @Override
-  public List<Coin> getCoins() {
-    return crytoGeckoService.getCoins();
   }
 
 }

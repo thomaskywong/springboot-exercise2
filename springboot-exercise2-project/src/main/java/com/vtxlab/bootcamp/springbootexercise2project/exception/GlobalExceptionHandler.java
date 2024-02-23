@@ -16,8 +16,7 @@ public class GlobalExceptionHandler {
   public ApiResponse<Void> InvalidCoinExceptionHandler(
       InvalidCoinException ex) {
     return ApiResponse.<Void>builder() //
-        .code(Syscode.INVALID_COIN.getCode()) //
-        .message(Syscode.INVALID_COIN.getMessage()) //
+        .status(Syscode.INVALID_COIN) //
         .data(null) //
         .build();
   }
@@ -27,18 +26,17 @@ public class GlobalExceptionHandler {
   public ApiResponse<Void> InvalidCurrencyExceptionHandler(
       InvalidCurrencyException ex) {
     return ApiResponse.<Void>builder() //
-        .code(Syscode.INVALID_CURRENCY.getCode()) //
-        .message(Syscode.INVALID_CURRENCY.getMessage()) //
+        .status(Syscode.INVALID_CURRENCY) //
         .data(null) //
         .build();
   }
 
   @ExceptionHandler(CoingeckoNotAvailableException.class)
   @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
-  public ApiResponse<Void> CoingeckoNotAvailableExceptionHandler(CoingeckoNotAvailableException ex) {
+  public ApiResponse<Void> CoingeckoNotAvailableExceptionHandler(
+      CoingeckoNotAvailableException ex) {
     return ApiResponse.<Void>builder() //
-        .code(Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION.getCode()) //
-        .message(Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION.getMessage()) //
+        .status(Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION) //
         .data(null) //
         .build();
   }
@@ -47,8 +45,7 @@ public class GlobalExceptionHandler {
   @ResponseStatus(value = HttpStatus.REQUEST_TIMEOUT)
   public ApiResponse<Void> RestClientExceptionHandler(RestClientException ex) {
     return ApiResponse.<Void>builder() //
-        .code(Syscode.JPH_NOT_AVAILABLE.getCode()) //
-        .message(Syscode.JPH_NOT_AVAILABLE.getMessage()) //
+        .status(Syscode.JPH_NOT_AVAILABLE) //
         .data(null) //
         .build();
   }
@@ -57,8 +54,7 @@ public class GlobalExceptionHandler {
   @ResponseStatus(value = HttpStatus.REQUEST_TIMEOUT)
   public ApiResponse<Void> ExceptionHandler(Exception ex) {
     return ApiResponse.<Void>builder() //
-        .code(Syscode.GENERAL_EXCEPTION.getCode()) //
-        .message(Syscode.GENERAL_EXCEPTION.getMessage()) //
+        .status(Syscode.GENERAL_EXCEPTION) //
         .data(null) //
         .build();
   }
