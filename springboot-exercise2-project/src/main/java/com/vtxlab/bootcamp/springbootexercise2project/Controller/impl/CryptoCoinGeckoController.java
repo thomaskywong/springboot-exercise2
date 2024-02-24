@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vtxlab.bootcamp.springbootexercise2project.Controller.CryptoCoinGeckoOperation;
+import com.vtxlab.bootcamp.springbootexercise2project.Service.CryptoGeckoService;
 import com.vtxlab.bootcamp.springbootexercise2project.Service.impl.RedisService;
 import com.vtxlab.bootcamp.springbootexercise2project.config.ScheduledConfig;
+import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Coin;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market;
 import com.vtxlab.bootcamp.springbootexercise2project.exception.CoingeckoNotAvailableException;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.ApiResponse;
@@ -32,6 +34,9 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
 
   @Autowired
   private ScheduledConfig scheduledConfig;
+
+  @Autowired
+  private CryptoGeckoService cryptoGeckoService;
 
   @Override
   public ApiResponse<List<Market>> getMarkets(String currency, List<String> ids)
@@ -97,6 +102,15 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
           .build();
     }
 
+  }
+
+  @Override
+  public ApiResponse<List<Coin>> getCoins() throws JsonProcessingException {
+    List<Coin> coins = cryptoGeckoService.getCoins();
+    return ApiResponse.<List<Coin>>builder() //
+                      .OK() //
+                      .data(coins) //
+                      .build();
   }
 
 }

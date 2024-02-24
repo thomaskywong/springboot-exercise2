@@ -7,6 +7,7 @@ public enum CoinId {
 
   BITCOIN ("bitcoin"),
   ETHEREUM ("ethereum"),
+  TETHER ("tether"),
   ;
 
   private String id;

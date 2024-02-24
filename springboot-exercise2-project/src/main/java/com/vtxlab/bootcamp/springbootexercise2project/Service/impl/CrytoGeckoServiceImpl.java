@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vtxlab.bootcamp.springbootexercise2project.Service.CryptoGeckoService;
-import com.vtxlab.bootcamp.springbootexercise2project.config.ScheduledConfig;
+import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Coin;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.CoinId;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.Currency;
@@ -71,19 +71,18 @@ public class CrytoGeckoServiceImpl implements CryptoGeckoService {
         @Override
         public void getJPHdataToRedis() throws JsonProcessingException {
 
+                // List<Coin> coins = this.getCoins();
+
                 for (Currency cur : Currency.values()) {
 
                         String currency = cur.name().toLowerCase();
 
                         for (CoinId coin : CoinId.values()) {
-                                // System.out.println("currency=" + cur.name() + ", id=" + coin.getId());
-
                                 String coinId = coin.getId();
-                                String[] ids = new String[1];
-                                ids[0] = coinId;
+                                // String[] ids = new String[1];
+                                // ids[0] = coinId;
 
-                                List<Market> markets =
-                                                this.getMarkets(cur, ids);
+                                List<Market> markets = this.getMarket(cur, coinId);
 
                                 String key = new StringBuilder(
                                                 "crytpo:coingecko:coin-markets:")
@@ -98,8 +97,33 @@ public class CrytoGeckoServiceImpl implements CryptoGeckoService {
                                 redisService.setValue(key, serializedValue);
 
                         }
+
                 }
 
         }
+
+        private List<Market> getMarket(Currency cur, String id) {
+
+                String urlString = UriCompBuilder.url(Scheme.HTTPS, domain,
+                                basepath, endpointMarkets, cur, key, id);
+                
+                Market[] market = restTemplate.getForObject(urlString, Market[].class);
+                return Arrays.stream(market).collect(Collectors.toList());
+
+        }
+
+        @Override
+        public List<Coin> getCoins() {
+
+                String urlString = UriCompBuilder.url(Scheme.HTTPS, domain,
+                                basepath, endpointCoins, key);
+
+                Coin[] coins = restTemplate.getForObject(urlString,
+                                Coin[].class);
+
+                return Arrays.stream(coins).collect(Collectors.toList());
+        }
+
+
 
 }
