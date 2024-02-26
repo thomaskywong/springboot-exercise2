@@ -2,20 +2,19 @@ package com.vtxlab.bootcamp.springbootexercise2project;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 public class SpringbootExercise2ProjectApplication {
 
 	public static void main(String[] args) {
-		ConfigurableApplicationContext cac = 
+		// ConfigurableApplicationContext cac = //
 			SpringApplication.run(SpringbootExercise2ProjectApplication.class, args);
 		
-		String[] beans = cac.getBeanDefinitionNames();
+		// String[] beans = cac.getBeanDefinitionNames();
 
-		for(String bean : beans) {
-			System.out.println("bean=" + bean);
-		}
+		// for(String bean : beans) {
+		// 	System.out.println("bean=" + bean);
+		// }
 
 	}
 

@@ -12,7 +12,7 @@ import com.vtxlab.bootcamp.springbootexercise2project.infra.ApiResponse;
 
 public interface CryptoCoinGeckoOperation {
 
-  @GetMapping(value = "/coins")
+  @GetMapping(value = "/coins/markets")
   @ResponseStatus(value = HttpStatus.OK)
   ApiResponse<List<Market>> getMarkets(
       @RequestParam(name = "currency", required = true) String currency, //
@@ -21,6 +21,6 @@ public interface CryptoCoinGeckoOperation {
 
   @GetMapping(value = "/coins/list")
   @ResponseStatus(value = HttpStatus.OK)
-  ApiResponse<List<Coin>> getCoins() throws JsonProcessingException;
+  List<Coin> getCoins() throws JsonProcessingException;
 
 }

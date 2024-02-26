@@ -1,7 +1,6 @@
 package com.vtxlab.bootcamp.springbootexercise2project.config;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,9 +10,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vtxlab.bootcamp.springbootexercise2project.Service.CryptoGeckoService;
 import com.vtxlab.bootcamp.springbootexercise2project.Service.impl.RedisService;
-import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market;
-import com.vtxlab.bootcamp.springbootexercise2project.infra.CoinId;
-import com.vtxlab.bootcamp.springbootexercise2project.infra.Currency;
 import lombok.Getter;
 import lombok.Setter;
 
