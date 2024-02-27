@@ -30,12 +30,13 @@ public class ScheduledConfig {
   @Autowired
   private RedisService redisService;
 
-  @Scheduled(fixedRate = 30000)
+  // @Scheduled(fixedRate = 30000)
+  @Scheduled(cron = "0 * * * * *") // every xx:xx:00
   public void fixedRateTask() {
 
     try {
 
-      cryptoGeckoService.getJPHdataToRedis();
+      cryptoGeckoService.getDataToRedis();
       this.coingeckoUpdateTime = LocalDateTime.now();
       System.out.println("update time= " + this.coingeckoUpdateTime);
 

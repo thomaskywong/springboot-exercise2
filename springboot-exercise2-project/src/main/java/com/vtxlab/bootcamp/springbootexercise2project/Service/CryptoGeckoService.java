@@ -12,7 +12,7 @@ public interface CryptoGeckoService {
 
   List<Market> getMarkets(Currency currency, String... ids);
 
-  void getJPHdataToRedis() throws JsonProcessingException;
+  void getDataToRedis() throws JsonProcessingException;
 
   List<Coin> getCoins();
 

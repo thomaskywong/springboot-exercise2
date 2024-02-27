@@ -69,7 +69,7 @@ public class CrytoGeckoServiceImpl implements CryptoGeckoService {
         }
 
         @Override
-        public void getJPHdataToRedis() throws JsonProcessingException {
+        public void getDataToRedis() throws JsonProcessingException {
 
                 // List<Coin> coins = this.getCoins();
 

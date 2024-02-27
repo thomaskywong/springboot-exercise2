@@ -10,11 +10,11 @@ import com.vtxlab.bootcamp.springbootexercise2project.Service.CryptoGeckoService
 public class AppRunner implements CommandLineRunner{
 
   @Autowired
-  private CryptoGeckoService cGeckoService;
+  private CryptoGeckoService cryptoGeckoService;
 
   @Override
   public void run(String... args) throws Exception {
-    cGeckoService.getJPHdataToRedis();
+    cryptoGeckoService.getDataToRedis();
     System.out.println("update time=" + LocalDateTime.now());
   }
 }
