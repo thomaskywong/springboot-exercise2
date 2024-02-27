@@ -21,6 +21,10 @@ public interface CryptoCoinGeckoOperation {
 
   @GetMapping(value = "/coins/list")
   @ResponseStatus(value = HttpStatus.OK)
-  List<Coin> getCoins() throws JsonProcessingException;
+  ApiResponse<List<Coin>> getCoins() throws JsonProcessingException;
+
+  // @GetMapping(value = "/coins/list2")
+  // @ResponseStatus(value = HttpStatus.OK)
+  // List<Coin> getCoins() throws JsonProcessingException;
 
 }

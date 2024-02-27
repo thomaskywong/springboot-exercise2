@@ -2,6 +2,7 @@ package com.vtxlab.bootcamp.springbootexercise2project.config;
 
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Component
+@Configuration
 @EnableScheduling
 public class ScheduledConfig {
 

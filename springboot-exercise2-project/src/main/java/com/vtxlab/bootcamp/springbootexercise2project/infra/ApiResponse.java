@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Getter
+// @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
 public class ApiResponse<T> {
@@ -31,7 +32,7 @@ public class ApiResponse<T> {
     private String message;
     private T data;
 
-    public ApiResponseBuilder<T> OK() {
+    public ApiResponseBuilder<T> ok() {
       this.code = Syscode.OK.getCode();
       this.message = Syscode.OK.getMessage();
       return this;

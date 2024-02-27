@@ -12,7 +12,7 @@ import lombok.ToString;
 @Builder
 @EqualsAndHashCode
 @ToString
-public class Market implements Serializable {
+public class Market {
 
   @JsonProperty(value = "id")
   private String id;

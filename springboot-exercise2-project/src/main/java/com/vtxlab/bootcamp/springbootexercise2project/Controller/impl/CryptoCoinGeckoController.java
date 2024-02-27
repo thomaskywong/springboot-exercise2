@@ -75,7 +75,7 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
       }
 
       return ApiResponse.<List<Market>>builder() //
-          .OK() //
+          .ok() //
           .data(markets) //
           .build();
 
@@ -97,7 +97,7 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
       }
 
       return ApiResponse.<List<Market>>builder() //
-          .OK() //
+          .ok() //
           .data(markets) //
           .build();
     }
@@ -105,14 +105,22 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
   }
 
   @Override
-  public List<Coin> getCoins() throws JsonProcessingException {
-    return cryptoGeckoService.getCoins();
+  public ApiResponse<List<Coin>> getCoins() throws JsonProcessingException {
+    List<Coin> coins = cryptoGeckoService.getCoins();
+    
+    return ApiResponse.<List<Coin>>builder() //
+                      .ok() //
+                      .data(coins) //
+                      .build();
 
-    // List<Coin> coins = cryptoGeckoService.getCoins();
-    // return ApiResponse.<List<Coin>>builder() //
-    //                   .OK() //
-    //                   .data(coins) //
-    //                   .build();
   }
+
+  // @Override
+  // public List<Coin> getCoins() throws JsonProcessingException {
+  //   List<Coin> coins = cryptoGeckoService.getCoins();
+    
+  //   return coins;
+
+  // }
 
 }
