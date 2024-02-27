@@ -115,12 +115,12 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
 
   }
 
-  // @Override
-  // public List<Coin> getCoins() throws JsonProcessingException {
-  //   List<Coin> coins = cryptoGeckoService.getCoins();
+  @Override
+  public List<Coin> getCoins2() throws JsonProcessingException {
+    List<Coin> coins = cryptoGeckoService.getCoins();
     
-  //   return coins;
+    return coins;
 
-  // }
+  }
 
 }

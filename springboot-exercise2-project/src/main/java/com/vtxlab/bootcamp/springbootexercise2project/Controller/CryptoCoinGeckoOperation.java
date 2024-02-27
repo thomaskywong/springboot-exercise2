@@ -23,8 +23,8 @@ public interface CryptoCoinGeckoOperation {
   @ResponseStatus(value = HttpStatus.OK)
   ApiResponse<List<Coin>> getCoins() throws JsonProcessingException;
 
-  // @GetMapping(value = "/coins/list2")
-  // @ResponseStatus(value = HttpStatus.OK)
-  // List<Coin> getCoins() throws JsonProcessingException;
+  @GetMapping(value = "/coins/list2")
+  @ResponseStatus(value = HttpStatus.OK)
+  List<Coin> getCoins2() throws JsonProcessingException;
 
 }
