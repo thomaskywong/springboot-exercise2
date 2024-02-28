@@ -58,7 +58,7 @@ public class Market {
   @JsonProperty(value = "market_cap_change_percentage_24h")
   private double marketCapChangePercent24h;
   // "market_cap_change_percentage_24h": 2.40632,
-  @JsonProperty(value = "circulating_supply24h")
+  @JsonProperty(value = "circulating_supply")
   private double circulatingSupply;
   // "circulating_supply": 120171971.326682,
   @JsonProperty(value = "total_supply")
