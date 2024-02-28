@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import com.vtxlab.bootcamp.springbootexercise2project.Service.impl.RedisService;
 import com.vtxlab.bootcamp.springbootexercise2project.config.ScheduledConfig;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Coin;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market;
+import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.MarketDTO;
 import com.vtxlab.bootcamp.springbootexercise2project.exception.CoingeckoNotAvailableException;
 import com.vtxlab.bootcamp.springbootexercise2project.exception.InvalidCoinException;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.ApiResponse;
@@ -131,7 +133,7 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
 
     Currency cur = Currency.toCurrency(currency);
 
-    if (ids == null || (ids != null && ids.length == 0) ) {
+    if (ids == null || (ids != null && ids.length == 0)) {
 
       return cryptoGeckoService.getMarkets(cur);
 
@@ -150,6 +152,31 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
     }
 
 
+
+  }
+
+  @Override
+  public List<MarketDTO> getMarkets3() throws JsonProcessingException {
+
+    return cryptoGeckoService.getMarkets(Currency.USD) //
+        .stream() //
+        .map(e -> MarketDTO.mapMarketDTO(e)) //
+        .collect(Collectors.toList());
+
+  }
+
+  @Override
+  public ApiResponse<List<MarketDTO>> getMarkets4()
+      throws JsonProcessingException {
+
+    List<MarketDTO> dto = cryptoGeckoService.getMarkets(Currency.USD) //
+        .stream() //
+        .map(e -> MarketDTO.mapMarketDTO(e)) //
+        .collect(Collectors.toList());
+    return ApiResponse.<List<MarketDTO>>builder() //
+        .ok() //
+        .data(dto) //
+        .build();
 
   }
 
