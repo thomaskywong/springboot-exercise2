@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,8 +30,8 @@ public class ScheduledConfig {
   @Autowired
   private RedisService redisService;
 
-  // @Scheduled(fixedRate = 30000)
-  @Scheduled(cron = "0 * * * * *") // every xx:xx:00
+  @Scheduled(fixedRate = 30000)
+  // @Scheduled(cron = "0 * * * * *") // every xx:xx:00
   public void fixedRateTask() {
 
     try {

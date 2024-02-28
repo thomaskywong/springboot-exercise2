@@ -16,7 +16,7 @@ public interface CryptoCoinGeckoOperation {
   @ResponseStatus(value = HttpStatus.OK)
   ApiResponse<List<Market>> getMarkets(
       @RequestParam(name = "currency", required = true) String currency, //
-      @RequestParam(name = "ids", required = false) List<String> ids) //
+      @RequestParam(name = "ids", required = false) String... ids) //
       throws JsonProcessingException;
 
   @GetMapping(value = "/coins/list")
@@ -27,4 +27,10 @@ public interface CryptoCoinGeckoOperation {
   @ResponseStatus(value = HttpStatus.OK)
   List<Coin> getCoins2() throws JsonProcessingException;
 
+  @GetMapping(value = "/coins/markets2")
+  @ResponseStatus(value = HttpStatus.OK)
+  List<Market> getMarkets2(
+      @RequestParam(name = "currency", required = true) String currency, //
+      @RequestParam(name = "ids", required = false) String... ids) //
+      throws JsonProcessingException;
 }

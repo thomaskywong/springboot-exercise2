@@ -16,6 +16,7 @@ import com.vtxlab.bootcamp.springbootexercise2project.config.ScheduledConfig;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Coin;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market;
 import com.vtxlab.bootcamp.springbootexercise2project.exception.CoingeckoNotAvailableException;
+import com.vtxlab.bootcamp.springbootexercise2project.exception.InvalidCoinException;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.ApiResponse;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.CoinId;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.Currency;
@@ -39,9 +40,10 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
   private CryptoGeckoService cryptoGeckoService;
 
   @Override
-  public ApiResponse<List<Market>> getMarkets(String currency, List<String> ids)
+  public ApiResponse<List<Market>> getMarkets(String currency, String... ids)
       throws JsonProcessingException {
 
+    // required rewrite logic. check 3rd if not available.
     if (!(Currency.isValidCurrency(currency))) {
       // System.out.println("Invalid Currency.");
       throw new CoingeckoNotAvailableException(
@@ -55,7 +57,7 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
       throw new CoingeckoNotAvailableException(
           Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
     }
-    System.out.println("delay time=" + duration);
+    // System.out.println("delay time=" + duration);
 
     List<Market> markets = new LinkedList<>();
     String coinId = "";
@@ -107,19 +109,47 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
   @Override
   public ApiResponse<List<Coin>> getCoins() throws JsonProcessingException {
     List<Coin> coins = cryptoGeckoService.getCoins();
-    
+
     return ApiResponse.<List<Coin>>builder() //
-                      .ok() //
-                      .data(coins) //
-                      .build();
+        .ok() //
+        .data(coins) //
+        .build();
 
   }
 
   @Override
   public List<Coin> getCoins2() throws JsonProcessingException {
     List<Coin> coins = cryptoGeckoService.getCoins();
-    
+
     return coins;
+
+  }
+
+  @Override
+  public List<Market> getMarkets2(String currency, String... ids)
+      throws JsonProcessingException {
+
+    Currency cur = Currency.toCurrency(currency);
+
+    if (ids == null || (ids != null && ids.length == 0) ) {
+
+      return cryptoGeckoService.getMarkets(cur);
+
+    } else {
+
+      List<Coin> coins = cryptoGeckoService.getCoins();
+
+      for (String id : ids) {
+        if (!(Coin.isValidCoin(coins, id))) {
+          throw new InvalidCoinException(Syscode.INVALID_COIN);
+        }
+      }
+
+      return cryptoGeckoService.getMarkets(cur, ids);
+
+    }
+
+
 
   }
 
