@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Coin;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market;
-import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.MarketDTO;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.ApiResponse;
 
 public interface CryptoCoinGeckoOperation {
@@ -26,26 +25,4 @@ public interface CryptoCoinGeckoOperation {
     @ResponseStatus(value = HttpStatus.OK)
     ApiResponse<List<Coin>> getCoins() throws JsonProcessingException;
 
-    @GetMapping(value = "/coins/list2")
-    @ResponseStatus(value = HttpStatus.OK)
-    List<Coin> getCoins2() throws JsonProcessingException;
-
-    @GetMapping(value = "/coins/markets2")
-    @ResponseStatus(value = HttpStatus.OK)
-    List<Market> getMarkets2(
-            @RequestParam(name = "currency", required = true) String currency, //
-            @RequestParam(name = "ids", required = false) String... ids) //
-            throws JsonProcessingException;
-
-//     @GetMapping(value = "/coins/markets3")
-//     @ResponseStatus(value = HttpStatus.OK)
-//     @CrossOrigin(origins = "*", maxAge = 3600) // For ApiResponse unwrapping
-//     List<MarketDTO> getMarkets3() //
-//             throws JsonProcessingException;
-
-//     @GetMapping(value = "/coins/markets4")
-//     @ResponseStatus(value = HttpStatus.OK)
-//     @CrossOrigin(origins = "*", maxAge = 3600)
-//     ApiResponse<List<MarketDTO>> getMarkets4() //
-//             throws JsonProcessingException;
 }
