@@ -15,6 +15,6 @@ public class AppRunner implements CommandLineRunner{
   @Override
   public void run(String... args) throws Exception {
     cryptoGeckoService.getDataToRedis();
-    System.out.println("update time=" + LocalDateTime.now());
+    // System.out.println("update time=" + LocalDateTime.now());
   }
 }

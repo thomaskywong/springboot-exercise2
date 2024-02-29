@@ -16,6 +16,7 @@ public interface CryptoCoinGeckoOperation {
 
     @GetMapping(value = "/coins/markets")
     @ResponseStatus(value = HttpStatus.OK)
+    @CrossOrigin // For ApiResponse unwrapping
     ApiResponse<List<Market>> getMarkets(
             @RequestParam(name = "currency", required = true) String currency, //
             @RequestParam(name = "ids", required = false) String... ids) //
@@ -36,15 +37,15 @@ public interface CryptoCoinGeckoOperation {
             @RequestParam(name = "ids", required = false) String... ids) //
             throws JsonProcessingException;
 
-    @GetMapping(value = "/coins/markets3")
-    @ResponseStatus(value = HttpStatus.OK)
-    @CrossOrigin(origins = "*", maxAge = 3600)
-    List<MarketDTO> getMarkets3() //
-            throws JsonProcessingException;
+//     @GetMapping(value = "/coins/markets3")
+//     @ResponseStatus(value = HttpStatus.OK)
+//     @CrossOrigin(origins = "*", maxAge = 3600) // For ApiResponse unwrapping
+//     List<MarketDTO> getMarkets3() //
+//             throws JsonProcessingException;
 
-    @GetMapping(value = "/coins/markets4")
-    @ResponseStatus(value = HttpStatus.OK)
-    @CrossOrigin(origins = "*", maxAge = 3600)
-    ApiResponse<List<MarketDTO>> getMarkets4() //
-            throws JsonProcessingException;
+//     @GetMapping(value = "/coins/markets4")
+//     @ResponseStatus(value = HttpStatus.OK)
+//     @CrossOrigin(origins = "*", maxAge = 3600)
+//     ApiResponse<List<MarketDTO>> getMarkets4() //
+//             throws JsonProcessingException;
 }
