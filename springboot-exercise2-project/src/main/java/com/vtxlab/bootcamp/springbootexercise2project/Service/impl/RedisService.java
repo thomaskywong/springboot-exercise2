@@ -19,12 +19,12 @@ public class RedisService {
 
   public String setValue(String key, String value) {
     redisTemplate.opsForValue().set(key, value);
-    redisTemplate.expire(key, Duration.ofSeconds(60));
+    // redisTemplate.expire(key, Duration.ofSeconds(60));
     return redisTemplate.opsForValue().get(key);
   }
 
   public String getValue(String key) {
-    String value = redisTemplate.opsForValue().get(key);
+    String value = redisTemplate.opsForValue()  .get(key);
     if (value == null) {
       throw new CoingeckoNotAvailableException(Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
     }

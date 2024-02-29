@@ -1,10 +1,12 @@
 package com.vtxlab.bootcamp.springbootexercise2project.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.RestClientException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.ApiResponse;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.Syscode;
 
@@ -45,7 +47,25 @@ public class GlobalExceptionHandler {
   @ResponseStatus(value = HttpStatus.REQUEST_TIMEOUT)
   public ApiResponse<Void> RestClientExceptionHandler(RestClientException ex) {
     return ApiResponse.<Void>builder() //
-        .status(Syscode.JPH_NOT_AVAILABLE) //
+        .status(Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION) //
+        .data(null) //
+        .build();
+  }
+
+  @ExceptionHandler(JsonProcessingException.class)
+  @ResponseStatus(value = HttpStatus.REQUEST_TIMEOUT)
+  public ApiResponse<Void> JsonProcessingExceptionHandler(JsonProcessingException ex) {
+    return ApiResponse.<Void>builder() //
+        .status(Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION) //
+        .data(null) //
+        .build();
+  }
+
+  @ExceptionHandler(MissingServletRequestParameterException.class)
+  @ResponseStatus(value = HttpStatus.REQUEST_TIMEOUT)
+  public ApiResponse<Void> MissingServletRequestParameterExceptionHandler(MissingServletRequestParameterException ex) {
+    return ApiResponse.<Void>builder() //
+        .status(Syscode.INVALID_CURRENCY) //
         .data(null) //
         .build();
   }

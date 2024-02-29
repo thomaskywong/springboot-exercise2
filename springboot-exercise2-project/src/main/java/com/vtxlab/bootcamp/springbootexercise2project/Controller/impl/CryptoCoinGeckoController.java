@@ -1,6 +1,5 @@
 package com.vtxlab.bootcamp.springbootexercise2project.Controller.impl;
 
-import java.util.LinkedList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +11,8 @@ import com.vtxlab.bootcamp.springbootexercise2project.Service.CryptoGeckoService
 import com.vtxlab.bootcamp.springbootexercise2project.Service.impl.RedisService;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Coin;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market;
-import com.vtxlab.bootcamp.springbootexercise2project.exception.CoingeckoNotAvailableException;
+import com.vtxlab.bootcamp.springbootexercise2project.exception.InvalidCurrencyException;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.ApiResponse;
-import com.vtxlab.bootcamp.springbootexercise2project.infra.CoinId;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.Currency;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.Syscode;
 
@@ -34,60 +32,66 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
 
   @Override
   public ApiResponse<List<Market>> getMarkets(String currency, String... ids)
-      throws JsonProcessingException {
+      throws Exception {
 
     if (!(Currency.isValidCurrency(currency))) {
-      throw new CoingeckoNotAvailableException(
-          Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
+      throw new InvalidCurrencyException(Syscode.INVALID_CURRENCY);
     }
 
     Currency cur = Currency.toCurrency(currency);
 
-    List<Market> markets = new LinkedList<>();
-    String key = "";
-    String value = "";
-    Market market;
+    List<Market> markets = cryptoGeckoService.getMarkets(cur, ids);
 
-    if (ids == null) {
 
-      markets = cryptoGeckoService.getMarkets(cur);
+    // List<Market> markets = new LinkedList<>();
+    // String key = "";
+    // String value = "";
+    // Market market;
 
-      if (markets.size() == 0) {
-        throw new CoingeckoNotAvailableException(
-            Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
-      }
+    // if (ids == null) {
+    //   try {
+    //     markets = cryptoGeckoService.getMarkets(cur);
+    //   } catch (RestClientException ex) {
+    //     throw new CoingeckoNotAvailableException(
+    //         Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
+    //   }
 
-      return ApiResponse.<List<Market>>builder() //
-          .ok() //
-          .data(markets) //
-          .build();
-
-    } else {
-
-      markets = cryptoGeckoService.getMarkets(cur, ids);
-
-      if (markets.size() == 0) {
-
-        for (String id : ids) {
-
-          if (!(CoinId.isValidCoinId(id))) {
-            throw new CoingeckoNotAvailableException(
-                Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
-          }
-
-          key = new StringBuilder("crytpo:coingecko:coin-markets:")
-              .append(currency).append(":").append(id).toString();
-          value = redisService.getValue(key);
-          market = objectMapper.readValue(value, Market.class);
-          markets.add(market);
-        }
-      }
 
       return ApiResponse.<List<Market>>builder() //
           .ok() //
           .data(markets) //
           .build();
-    }
+
+    // } else {
+
+    //   try {
+    //     markets = cryptoGeckoService.getMarkets(cur, ids);
+    //   } catch (Exception ex) {
+
+    //   }
+
+    //   if (markets.size() == 0) {
+
+    //     for (String id : ids) {
+
+    //       if (!(CoinId.isValidCoinId(id))) {
+    //         throw new CoingeckoNotAvailableException(
+    //             Syscode.COINGECKO_NOT_AVAILABLE_EXCEPTION);
+    //       }
+
+    //       key = new StringBuilder("crytpo:coingecko:coin-markets:")
+    //           .append(currency).append(":").append(id).toString();
+    //       value = redisService.getValue(key);
+    //       market = objectMapper.readValue(value, Market.class);
+    //       markets.add(market);
+    //     }
+    //   }
+
+    //   return ApiResponse.<List<Market>>builder() //
+    //       .ok() //
+    //       .data(markets) //
+    //       .build();
+    // }
 
   }
 

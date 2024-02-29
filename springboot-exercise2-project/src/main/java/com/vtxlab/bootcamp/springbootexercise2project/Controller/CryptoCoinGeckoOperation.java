@@ -16,10 +16,10 @@ public interface CryptoCoinGeckoOperation {
     @GetMapping(value = "/coins/markets")
     @ResponseStatus(value = HttpStatus.OK)
     @CrossOrigin // For ApiResponse unwrapping
-    ApiResponse<List<Market>> getMarkets(
+    ApiResponse<List<Market>> getMarkets (
             @RequestParam(name = "currency", required = true) String currency, //
             @RequestParam(name = "ids", required = false) String... ids) //
-            throws JsonProcessingException;
+            throws Exception;
 
     @GetMapping(value = "/coins/list")
     @ResponseStatus(value = HttpStatus.OK)

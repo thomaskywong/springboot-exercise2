@@ -11,6 +11,7 @@ public enum Syscode {
   INVALID_COIN("200002","Invalid Coin Id."), //
   COINGECKO_NOT_AVAILABLE_EXCEPTION("900000","RestClientException - Coingecko Service is unavailable."), //
   REST_CLIENT_EXEPTION("900001", "RestClient Exception."), //
+  JSON_PROCESSING_EXCEPTION("900002", "Json Processing Exception."), //
   NPE_EXCEPTION("900009","Runtime Exception - NPE"), //
   GENERAL_EXCEPTION("999999","Exception"), //
   ;
