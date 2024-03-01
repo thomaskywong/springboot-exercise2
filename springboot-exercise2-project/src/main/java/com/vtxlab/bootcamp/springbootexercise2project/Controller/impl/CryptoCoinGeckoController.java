@@ -2,12 +2,16 @@ package com.vtxlab.bootcamp.springbootexercise2project.Controller.impl;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vtxlab.bootcamp.springbootexercise2project.Controller.CryptoCoinGeckoOperation;
+import com.vtxlab.bootcamp.springbootexercise2project.Service.ApiService;
 import com.vtxlab.bootcamp.springbootexercise2project.Service.CryptoGeckoService;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Coin;
+import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.CoinData;
 import com.vtxlab.bootcamp.springbootexercise2project.dto.jph.Market;
 import com.vtxlab.bootcamp.springbootexercise2project.exception.InvalidCurrencyException;
 import com.vtxlab.bootcamp.springbootexercise2project.infra.ApiResponse;
@@ -23,6 +27,9 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
   @Autowired
   private CryptoGeckoService cryptoGeckoService;
 
+  @Autowired // ApiService
+  private ApiService<CoinData> apiService;
+
   @Override
   public ApiResponse<List<Market>> getMarkets(String currency, String... ids)
       throws Exception {
@@ -35,10 +42,10 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
 
     List<Market> markets = cryptoGeckoService.getMarkets(cur, ids);
 
-      return ApiResponse.<List<Market>>builder() //
-          .ok() //
-          .data(markets) //
-          .build();
+    return ApiResponse.<List<Market>>builder() //
+        .ok() //
+        .data(markets) //
+        .build();
 
   }
 
@@ -50,6 +57,30 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
         .ok() //
         .data(coins) //
         .build();
+
+  }
+
+
+  @Override
+  public ModelAndView showCoins() {
+
+    List<CoinData> coinDataList = apiService.fetchData();
+
+    // ModelAndView modelAndView = new ModelAndView("coins-css");
+
+    ModelAndView modelAndView = new ModelAndView("coins");
+    modelAndView.addObject("coinDataList", coinDataList);
+
+    return modelAndView;
+  }
+
+  @Override
+  public String showCoins(Model model) {
+
+    List<CoinData> coinDataList = apiService.fetchData();
+    System.out.println(coinDataList);
+    model.addAttribute("coinDataList", coinDataList);
+    return "coins";
 
   }
 
