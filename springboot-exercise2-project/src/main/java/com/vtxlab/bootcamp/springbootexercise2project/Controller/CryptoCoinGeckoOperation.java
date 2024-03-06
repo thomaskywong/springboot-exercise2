@@ -33,5 +33,13 @@ public interface CryptoCoinGeckoOperation {
     @GetMapping(value = "/coins-data")
     String showCoins(Model model);
 
+    @GetMapping(value = "/coins/markets2")
+    @ResponseStatus(value = HttpStatus.OK)
+    @CrossOrigin // For ApiResponse unwrapping
+    ApiResponse<List<Market>> getMarkets10(
+            @RequestParam(name = "currency", required = true) String currency, //
+            @RequestParam(name = "ids", required = false) String... ids) //
+            throws Exception;
+
 
 }

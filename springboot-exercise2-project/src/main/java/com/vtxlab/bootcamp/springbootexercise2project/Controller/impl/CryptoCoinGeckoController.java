@@ -1,6 +1,7 @@
 package com.vtxlab.bootcamp.springbootexercise2project.Controller.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,6 +82,29 @@ public class CryptoCoinGeckoController implements CryptoCoinGeckoOperation {
     System.out.println(coinDataList);
     model.addAttribute("coinDataList", coinDataList);
     return "coins";
+
+  }
+
+  @Override
+  public ApiResponse<List<Market>> getMarkets10(String currency, String... ids)
+      throws Exception {
+
+    if (!(Currency.isValidCurrency(currency))) {
+      throw new InvalidCurrencyException(Syscode.INVALID_CURRENCY);
+    }
+
+    Currency cur = Currency.toCurrency(currency);
+
+    List<Market> markets = cryptoGeckoService.getMarkets(cur, ids);
+
+    List<Market> top10Markets = markets.stream()//
+                                       .filter(e -> e.getMarketCapRank() <= 10)//
+                                       .collect(Collectors.toList());
+
+    return ApiResponse.<List<Market>>builder() //
+        .ok() //
+        .data(top10Markets) //
+        .build();
 
   }
 
